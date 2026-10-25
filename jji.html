@@ -1,0 +1,251 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#075A9C">
+    <meta
+      name="description"
+      content="HealthyU helps you plan movement, hydration, and daily wellbeing."
+    >
+    <title>HealthyU</title>
+    <link rel="icon" href="logo.jpeg">
+    <link rel="stylesheet" href="style.css">
+    <script src="script.js" defer></script>
+  </head>
+  <body>
+    <div class="phone">
+      <section id="login" class="screen active auth" aria-labelledby="welcome-heading">
+        <img class="logo" src="logo.jpeg" alt="HealthyU logo">
+        <span class="eyebrow">HEALTHYU</span>
+        <h1 id="welcome-heading">Welcome back</h1>
+        <p>Your everyday movement companion.</p>
+        <p class="notice">
+        </p>
+        <label class="visually-hidden" for="le">Email</label>
+        <input id="le" type="email" autocomplete="email" placeholder="Email">
+        <label class="visually-hidden" for="lp">Password</label>
+        <input id="lp" type="password" autocomplete="current-password" placeholder="Password">
+        <button class="primary" type="button" onclick="login()">Log In</button>
+        <button class="secondary" type="button" onclick="show('signup')">Create an Account</button>
+        <p id="login-message" class="feedback" role="status" aria-live="polite"></p>
+      </section>
+
+      <section id="signup" class="screen setup" aria-labelledby="signup-heading">
+        <button class="back" type="button" onclick="show('login')">‹ Back</button>
+        <span class="eyebrow">CREATE ACCOUNT</span>
+        <h1 id="signup-heading">Let's get to know you</h1>
+        <p>This temporary account only works until you refresh or close this page.</p>
+        <label for="name">Full Name</label>
+        <input id="name" autocomplete="name" placeholder="Full name">
+        <label for="nick">Nickname for reminders</label>
+        <input id="nick" placeholder="e.g. Jeana">
+        <label for="se">Email</label>
+        <input id="se" type="email" autocomplete="email" placeholder="Email">
+        <label for="sp">Password (at least 8 characters)</label>
+        <input id="sp" type="password" autocomplete="new-password" minlength="8" maxlength="128" placeholder="Create a password">
+        <label for="sp-confirm">Confirm Password</label>
+        <input id="sp-confirm" type="password" autocomplete="new-password" minlength="8" maxlength="128" placeholder="Confirm your password">
+        <button class="primary" type="button" onclick="createAccount()">Create Account</button>
+        <p id="signup-message" class="feedback" role="status" aria-live="polite"></p>
+      </section>
+
+      <section id="schedule" class="screen setup" aria-labelledby="schedule-heading">
+        <span class="eyebrow">STEP 1 OF 2</span>
+        <h1 id="schedule-heading">Add your semester schedule</h1>
+        <p>Use actual dates and times so HealthyU can plan around them.</p>
+        <div class="card upload-card">
+          <label for="schedule-file">Upload a schedule CSV (optional)</label>
+          <input id="schedule-file" type="file" accept=".csv,text/csv">
+          <small>CSV columns: date, start, end, subject (example: 2026-10-20,09:00,10:00,Biology)</small>
+          <button class="outline" type="button" onclick="uploadSchedule()">Import CSV (Optional)</button>
+        </div>
+        <div class="card">
+          <label for="sd">Date</label>
+          <input id="sd" type="date">
+          <label for="ss">Start</label>
+          <input id="ss" type="time">
+          <label for="sx">End</label>
+          <input id="sx" type="time">
+          <label for="sub">Subject</label>
+          <input id="sub" placeholder="CSPC 109">
+          <button class="outline" type="button" onclick="addSchedule()">＋ Add Schedule</button>
+        </div>
+        <p id="schedule-message" class="feedback" role="status" aria-live="polite"></p>
+        <div id="list" class="schedule-list" aria-live="polite"></div>
+        <label class="visually-hidden" for="extra">Schedule notes</label>
+        <textarea id="extra" placeholder="Optional notes about your schedule..."></textarea>
+        <button class="primary" type="button" onclick="continueSchedule()">Continue</button>
+      </section>
+
+      <section id="activity" class="screen setup" aria-labelledby="activity-heading">
+        <span class="eyebrow">STEP 2 OF 2</span>
+        <h1 id="activity-heading">What physical activity can you manage?</h1>
+        <p>Choose something realistic.</p>
+        <div class="choices" role="group" aria-label="Choose an activity">
+          <button type="button" onclick="pick(this, 'Walking')">🚶 Walking</button>
+          <button type="button" onclick="pick(this, 'Stretching')">🧘 Stretching</button>
+          <button type="button" onclick="pick(this, 'Jogging')">🏃 Jogging</button>
+          <button type="button" onclick="pick(this, 'Cycling')">🚴 Cycling</button>
+          <button type="button" onclick="pick(this, 'Home Workout')">🏠 Home Workout</button>
+          <button type="button" onclick="pick(this, 'Sports')">⚽ Sports</button>
+        </div>
+        <label for="duration">Time you can spare</label>
+        <select id="duration">
+          <option value="10">5–10 minutes</option>
+          <option value="20">15–20 minutes</option>
+          <option value="30">30 minutes</option>
+          <option value="40">30+ minutes</option>
+        </select>
+        <p id="activity-message" class="feedback" role="status" aria-live="polite"></p>
+        <button class="primary" type="button" onclick="plan()">Create My Personalized Plan</button>
+      </section>
+
+      <section id="plan" class="screen setup" aria-labelledby="plan-heading">
+        <span class="eyebrow green">✓ PLAN READY</span>
+        <h1 id="plan-heading">Your personalized activity plan</h1>
+        <p id="suggest"></p>
+        <div class="card">
+          <h3>🏃 <span id="plan-minutes">10</span>-minute <span class="act">Walking</span></h3>
+          <p>HealthyU places activity around your saved schedule.</p>
+        </div>
+        <div class="motivation">✨ Reminders, milestones, hydration and mood will work together.</div>
+        <button class="primary" type="button" onclick="start()">Go to Dashboard</button>
+      </section>
+
+      <section id="app" class="screen app" aria-label="HealthyU dashboard">
+        <header>
+          <div class="brandline">
+            <img class="mini-logo" src="logo.jpeg" alt="">
+            <div>
+              <b>HealthyU</b>
+              <small id="today"></small>
+            </div>
+          </div>
+          <button type="button" aria-label="Toggle smart reminders" onclick="notify()">🔔</button>
+          <button type="button" aria-label="Log out" onclick="logout()">↪</button>
+        </header>
+        <p id="notification-status" class="notification-status" role="status" aria-live="polite">
+          Smart notifications are off.
+        </p>
+        <main>
+          <span class="eyebrow" id="day"></span>
+          <h2>Hi, <span id="who">Student</span>!</h2>
+          <p class="subline">A little movement goes a long way.</p>
+          <p id="fullDate" class="full-date"></p>
+          <div class="hero">
+            <span>TODAY'S MOVEMENT</span>
+            <strong><span id="mins">0</span> / 30 <small>minutes</small></strong>
+            <p>🏃 <span class="act">Walking</span> · <span id="pct">0</span>%</p>
+            <button type="button" onclick="logActivity()">＋ Log Activity</button>
+          </div>
+          <div class="card">
+            <div class="row">
+              <div>
+                <span class="eyebrow">SMART CALENDAR</span>
+                <h3 id="next">No schedule yet</h3>
+              </div>
+              <button class="small" type="button" onclick="calendar()">Open</button>
+            </div>
+            <p id="calendar-hint" class="calendar-hint">Your next class and activity gaps will appear here.</p>
+          </div>
+          <div class="card">
+            <span class="eyebrow">🏆 MILESTONE</span>
+            <h3><span id="milestone">0</span> / 30 minutes</h3>
+            <div
+              class="bar"
+              role="progressbar"
+              aria-label="Daily movement goal"
+              aria-valuemin="0"
+              aria-valuemax="30"
+              aria-valuenow="0"
+            ><i id="bar"></i></div>
+            <p id="motivate">💙 You're getting there! Keep moving.</p>
+          </div>
+          <div class="grid">
+            <div class="card">
+              <b>💧 HYDRATION</b>
+              <h3><span id="water">0</span> mL</h3>
+              <button class="outline" type="button" onclick="waterAdd()">＋ 250 mL</button>
+            </div>
+            <div class="card">
+              <b>😊 MOOD</b>
+              <h3 id="mood">Not checked</h3>
+              <button class="outline" type="button" onclick="mood()">Check in</button>
+            </div>
+          </div>
+          <div class="card">
+            <div class="row">
+              <b>📝 NOTEPAD</b>
+              <button class="small" type="button" onclick="note()">Save</button>
+            </div>
+            <label class="visually-hidden" for="notes">Notes</label>
+            <textarea id="notes" placeholder="Write notes, reminders, or thoughts..."></textarea>
+            <small id="saved" role="status" aria-live="polite">Available until you close or refresh this page.</small>
+          </div>
+          <div class="card ai">
+            <b>🤖 HealthyU AI Assistant</b>
+            <p>Ask about movement ideas, your schedule, hydration, or milestones.</p>
+            <small>Demo assistant · responses are generated locally.</small>
+            <label class="visually-hidden" for="ai-question">Ask the HealthyU assistant</label>
+            <input id="ai-question" type="text" maxlength="200" placeholder="e.g. When can I exercise?">
+            <button type="button" onclick="ai()">Ask HealthyU</button>
+            <p id="ai-response" class="ai-response" role="status" aria-live="polite"></p>
+          </div>
+        </main>
+        <nav aria-label="Main navigation">
+          <button type="button" aria-label="Home" onclick="home()">⌂<small>Home</small></button>
+          <button type="button" aria-label="Log activity" onclick="logActivity()">◔<small>Activity</small></button>
+          <button type="button" aria-label="Calendar" onclick="calendar()">▣<small>Calendar</small></button>
+          <button type="button" aria-label="AI assistant" onclick="focusAssistant()">🤖<small>AI</small></button>
+        </nav>
+      </section>
+
+      <div id="calendar-modal" class="modal" hidden>
+        <section class="calendar-dialog" role="dialog" aria-modal="true" aria-labelledby="calendar-title">
+          <div class="row">
+            <div>
+              <span class="eyebrow">SMART CALENDAR</span>
+              <h2 id="calendar-title">Your schedule</h2>
+            </div>
+            <button class="small" type="button" onclick="closeCalendar()">Close</button>
+          </div>
+          <label for="calendar-date">View date</label>
+          <input id="calendar-date" type="date" onchange="renderCalendar()">
+          <p id="calendar-day-summary" class="calendar-hint"></p>
+          <div id="calendar-events" class="schedule-list" aria-live="polite"></div>
+          <p id="calendar-activity" class="motivation"></p>
+        </section>
+      </div>
+      <div id="activity-modal" class="modal" hidden>
+        <section class="calendar-dialog" role="dialog" aria-modal="true" aria-labelledby="activity-log-title">
+          <h2 id="activity-log-title">Log physical activity</h2>
+          <label for="activity-minutes">Minutes moved</label>
+          <input id="activity-minutes" type="number" min="1" max="240" value="10">
+          <p id="activity-log-message" class="feedback" role="status" aria-live="polite"></p>
+          <div class="dialog-actions">
+            <button class="secondary" type="button" onclick="closeActivityLog()">Cancel</button>
+            <button class="primary" type="button" onclick="saveActivityLog()">Add Activity</button>
+          </div>
+        </section>
+      </div>
+      <div id="mood-modal" class="modal" hidden>
+        <section class="calendar-dialog" role="dialog" aria-modal="true" aria-labelledby="mood-title">
+          <h2 id="mood-title">How are you feeling?</h2>
+          <label for="mood-choice">Choose a mood</label>
+          <select id="mood-choice">
+            <option>Great</option>
+            <option>Good</option>
+            <option>Okay</option>
+            <option>Low</option>
+            <option>Stressed</option>
+          </select>
+          <div class="dialog-actions">
+            <button class="secondary" type="button" onclick="closeMood()">Cancel</button>
+            <button class="primary" type="button" onclick="saveMood()">Save Mood</button>
+          </div>
+        </section>
+      </div>
+    </div>
+  </body>
+</html>
